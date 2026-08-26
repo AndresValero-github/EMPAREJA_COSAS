@@ -5,7 +5,29 @@ import os
 # Configuración de ancho completo para la página
 st.set_page_config(layout="wide")
 
+
+######################
+# Permitir desplazamiento suave en la página
+st.markdown("""
+<style>
+html {
+    scroll-behavior: smooth;
+}
+</style>
+""", unsafe_allow_html=True)
+######################
+
+
 st.title("🧩 Juego de Emparejar Imágenes y Nombres")
+
+######################
+# Ancla para la parte superior de la página
+st.markdown('<div id="inicio"></div>', unsafe_allow_html=True)
+
+# Botón para bajar al pie de página
+st.markdown('<a href="#pie" target="_self" style="text-decoration: none;"><button style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;">⬇️ Bajar al pie de página</button></a>', unsafe_allow_html=True)
+
+######################
 
 # Obtiene la ruta de la carpeta donde está este mismo archivo app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -86,4 +108,14 @@ if st.session_state.validado:
     aciertos = sum(1 for img, resp in respuestas_usuario.items() if resp == DATOS[img])
     if aciertos == len(DATOS):
         st.balloons()
-        st.success(f"🎉 ¡Perfecto! Has acertado todas las parejas ({aciertos}/{len(DATOS)}).")
+        st.success(f"🎉 ¡Perfecto Amore! Has acertado todas las parejas, crack, titán ¡¡ ({aciertos}/{len(DATOS)}).")
+
+st.markdown("---")
+
+# Ancla para la parte inferior de la página
+st.markdown('<div id="pie"></div>', unsafe_allow_html=True)
+
+# Botón para subir al inicio
+st.markdown('<a href="#inicio" target="_self" style="text-decoration: none;"><button style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">⬆️ Subir al inicio</button></a>', unsafe_allow_html=True)
+
+
