@@ -7,7 +7,9 @@ st.set_page_config(layout="wide")
 
 st.title("🧩 Juego de Emparejar Imágenes y Nombres")
 
-CARPETA_IMAGENES = "imagenes"
+# Obtiene la ruta de la carpeta donde está este mismo archivo app.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CARPETA_IMAGENES = os.path.join(BASE_DIR, "imagenes")
 
 # 1. Cargar archivos dinámicamente desde la carpeta
 if not os.path.exists(CARPETA_IMAGENES):
