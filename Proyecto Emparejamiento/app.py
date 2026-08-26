@@ -18,7 +18,7 @@ html {
 ######################
 
 
-st.title("🧩 Juego de Emparejar Imágenes y Nombres")
+st.title("🧩 A estudiarrrrrr")
 
 ######################
 # Ancla para la parte superior de la página
