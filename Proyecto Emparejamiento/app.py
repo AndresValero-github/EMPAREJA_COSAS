@@ -50,6 +50,8 @@ DATOS = {
     for f in archivos
 }
 
+####################
+
 # Inicializar estados de la sesión
 if "nombres_mezclados" not in st.session_state:
     nombres = list(DATOS.values())
@@ -59,49 +61,86 @@ if "nombres_mezclados" not in st.session_state:
 if "validado" not in st.session_state:
     st.session_state.validado = False
 
+# Guardar selecciones activas para dinamizar los desplegables
+if "selecciones" not in st.session_state:
+    st.session_state.selecciones = {}
+##################
 opciones_nombres = ["-- Selecciona --"] + st.session_state.nombres_mezclados
+
+
+
 
 # 2. Renderizar en cuadrícula (grid)
 NUM_COLUMNAS = 4  # Cambia a 3 o 5 según prefieras
 elementos = list(DATOS.items())
 
+###########
+def actualizar_seleccion(key_id):
+    st.session_state.selecciones[key_id] = st.session_state[key_id]
+#############
+
 with st.form("juego_form"):
     respuestas_usuario = {}
 
     # Procesar elementos en filas de N columnas
-    for i in range(0, len(elementos), NUM_COLUMNAS):
-        grupo = elementos[i:i + NUM_COLUMNAS]
-        cols = st.columns(NUM_COLUMNAS)
+   # --- 3. Renderizar en cuadrícula (grid) con opciones dinámicas ---
+NUM_COLUMNAS = 4
+elementos = list(DATOS.items())
+respuestas_usuario = {}
 
-        for idx, (img_path, nombre_correcto) in enumerate(grupo):
-            pos_global = i + idx
-            with cols[idx]:
-                # Ancho fijo de 200px para mantener las imágenes proporcionadas y alineadas
-                st.image(img_path, width=200)
-                
-                eleccion = st.selectbox(
-                    f"Elemento {pos_global + 1}",
-                    opciones_nombres,
-                    key=f"select_{pos_global}"
-                )
-                respuestas_usuario[img_path] = eleccion
+# Reemplazamos 'with st.form' por un contenedor normal para permitir actualizaciones al instante
+for i in range(0, len(elementos), NUM_COLUMNAS):
+    grupo = elementos[i:i + NUM_COLUMNAS]
+    cols = st.columns(NUM_COLUMNAS)
 
-                # Validación individual
-                if st.session_state.validado:
-                    if eleccion == nombre_correcto:
-                        st.success("✅ ¡Correcto!")
-                    elif eleccion == "-- Selecciona --":
-                        st.warning("⚠️ Sin responder")
-                    else:
-                        st.error(f"❌ Era: {nombre_correcto}")
+    for idx, (img_path, nombre_correcto) in enumerate(grupo):
+        pos_global = i + idx
+        key_selector = f"select_{pos_global}"
         
-        st.write("") # Espaciador entre filas
+        with cols[idx]:
+            st.markdown(f'<div class="image-card">', unsafe_allow_html=True)
+            st.image(img_path)
+            
+            # Obtener nombres elegidos en OTRAS tarjetas
+            usados = [
+                v for k, v in st.session_state.selecciones.items() 
+                if k != key_selector and v != "-- Selecciona --"
+            ]
+            
+            # Filtrar opciones para dejar solo las disponibles
+            opciones_disponibles = ["-- Selecciona --"] + [
+                n for n in st.session_state.nombres_mezclados 
+                if n not in usados
+            ]
+            
+            # Desplegable con respuesta en tiempo real
+            eleccion = st.selectbox(
+                f"Elemento {pos_global + 1}",
+                opciones_disponibles,
+                key=key_selector,
+                on_change=actualizar_seleccion,
+                args=(key_selector,)
+            )
+            respuestas_usuario[img_path] = eleccion
 
-    st.markdown("---")
-    submitted = st.form_submit_button("Comprobar respuestas", type="primary")
-    if submitted:
-        st.session_state.validado = True
-        st.rerun()
+            # Contenedor de validación visual
+            st.markdown(f'<div class="validation-container">', unsafe_allow_html=True)
+            if st.session_state.validado:
+                if eleccion == nombre_correcto:
+                    st.success("✅ ¡Correcto!")
+                elif eleccion == "-- Selecciona --":
+                    st.warning("⚠️ Sin responder")
+                else:
+                    st.error(f"❌ Era: {nombre_correcto}")
+            
+            st.markdown('</div></div>', unsafe_allow_html=True)
+
+st.markdown("---")
+
+# Botón de comprobación fuera de un formulario
+if st.button("Comprobar respuestas", type="primary"):
+    st.session_state.validado = True
+    st.rerun()
 
 # 3. Resultado global
 if st.session_state.validado:
