@@ -84,7 +84,7 @@ with st.form("juego_form"):
 
     # Procesar elementos en filas de N columnas
    # --- 3. Renderizar en cuadrícula (grid) con opciones dinámicas ---
-NUM_COLUMNAS = 4
+NUM_COLUMNAS = 5
 elementos = list(DATOS.items())
 respuestas_usuario = {}
 
