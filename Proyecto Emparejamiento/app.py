@@ -71,7 +71,7 @@ opciones_nombres = ["-- Selecciona --"] + st.session_state.nombres_mezclados
 
 
 # 2. Renderizar en cuadrícula (grid)
-NUM_COLUMNAS = 4  # Cambia a 3 o 5 según prefieras
+NUM_COLUMNAS = 5  # Cambia a 3 o 5 según prefieras
 elementos = list(DATOS.items())
 
 ###########
